@@ -1,29 +1,57 @@
 package com.example.dormitory.DAO;
 
-import com.example.dormitory.models.Priority;
 import com.example.dormitory.models.Student;
 import org.springframework.stereotype.Component;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class StudentDAO {
-    private static int STUDENT_ID;
-    private List<Student> students;
+    private static final String URL = "jdbc:mysql://localhost:3306/groups";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "sasa310705";
 
-    {
-        students = new ArrayList<>();
+    private static Connection connection;
 
-        students.add(new Student(STUDENT_ID++, "Тарас", "Шевченко", 197.5, Priority.BUDGET));
-        students.add(new Student(STUDENT_ID++, "Михайло", "Подоляк", 170.7, Priority.CONTRACT));
-        students.add(new Student(STUDENT_ID++, "Микита", "Люблян", 192.1, Priority.BUDGET));
-        students.add(new Student(STUDENT_ID++, "Денис", "Вілятин", 195, Priority.BUDGET));
-        students.add(new Student(STUDENT_ID++, "Олексій", "Рітчин", 164.6, Priority.CONTRACT));
-        students.add(new Student(STUDENT_ID++, "Артем", "Деригун", 176, Priority.CONTRACT));
+    static {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+
     public List<Student> index() {
+        List<Student> students = new ArrayList<>();
+
+        try {
+            Statement statement = connection.createStatement();
+            String query = "SELECT * FROM students";
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                Student student = new Student();
+
+                student.setId(resultSet.getInt("id"));
+                student.setFirstName(resultSet.getString("firstName"));
+                student.setLastName(resultSet.getString("lastName"));
+                student.setPoints(resultSet.getDouble("points"));
+                student.setPriority(resultSet.getString("priority"));
+
+                students.add(student);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return students;
     }
 }

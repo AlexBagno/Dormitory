@@ -8,12 +8,14 @@ public class Student {
     private double points;
     private Priority priority;
 
-    public Student(int id, String firstName, String lastName, double points, Priority priority) {
+    public Student() {}
+
+    public Student(int id, String firstName, String lastName, double points, String priority) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.points = points;
-        this.priority = priority;
+        this.priority = Priority.valueOf(priority.toUpperCase());
     }
 
     public int getId() {
@@ -52,8 +54,8 @@ public class Student {
         return priority;
     }
 
-    public void setPriority(Priority priority) {
-        this.priority = priority;
+    public void setPriority(String priority) {
+        this.priority = Priority.valueOf(priority.toUpperCase());
     }
 }
 
