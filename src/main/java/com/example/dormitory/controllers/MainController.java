@@ -31,6 +31,7 @@ public class MainController {
 
     @GetMapping("/groupView")
     public String userView(Model model) {
+        model.addAttribute("students", studentDAO.index());
         return "view/groupView";
     }
 

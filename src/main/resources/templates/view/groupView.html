@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,5 +7,8 @@
 <body>
 <p>Group View</p>
 <!-- Таблица с группами-->
+<div th:each="student : ${students}">
+    <p th:text="${student.firstName} + ' ' + ${student.getLastName()}">Name</p>
+</div>
 </body>
 </html>

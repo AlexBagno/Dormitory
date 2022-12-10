@@ -15,7 +15,11 @@ public class Student {
         this.firstName = firstName;
         this.lastName = lastName;
         this.points = points;
-        this.priority = Priority.valueOf(priority.toUpperCase());
+        try {
+            this.priority = Priority.valueOf(priority.toUpperCase());
+        } catch (Exception e) {
+            this.priority = Priority.CONTRACT;
+        }
     }
 
     public int getId() {

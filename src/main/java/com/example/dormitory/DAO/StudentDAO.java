@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 @Component
 public class StudentDAO {
@@ -53,5 +54,15 @@ public class StudentDAO {
             throw new RuntimeException(e);
         }
         return students;
+    }
+
+    public void delete(int id) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM students WHERE id = ?");
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
