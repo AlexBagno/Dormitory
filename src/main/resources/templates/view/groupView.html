@@ -16,8 +16,8 @@
     </header>
     <main class="main">
         <div class="groups">
-            <div class="group">
-                <div class="group__number">Группа 1</div>
+            <div class="group" th:each="student, stStat : ${students}">
+                <div th:text="Группа + ' ' + ${stStat.index + 1}" class="group__number">Группа 1</div>
                 <div class="group__list">
                     <div class="groupItem list__title">
                         <div class="groupItem__id">ID</div>
@@ -26,12 +26,12 @@
                         <div class="groupItem__bal">Бал</div>
                         <div class="groupItem__formLern">Форма навчання</div>
                     </div>
-                    <div th:each="student : ${students}" class="groupItem">
-                        <div th:text="${student.getId()}" class="groupItem__id">id</div>
-                        <div th:text="${student.getFirstName()}"class="groupItem__name">FirstName</div>
-                        <div th:text="${student.getLastName()}"class="groupItem__lastName">LastName</div>
-                        <div th:text="${student.getPoints()}"class="groupItem__bal">Points</div>
-                        <div th:text="${student.getPriority()}"class="groupItem__formLern">Priority</div>
+                    <div th:each="s, sStat : ${students.get(stStat.index)}" class="groupItem">
+                        <div th:text="${sStat.index + 1}" class="groupItem__id">1</div>
+                        <div th:text="${{s.getFirstName()}}"class="groupItem__name">FirstName</div>
+                        <div th:text="${{s.getLastName()}}"class="groupItem__lastName">LastName</div>
+                        <div th:text="${{s.getPoints()}}"class="groupItem__bal">Points</div>
+                        <div th:text="${{s.getPriority()}}"class="groupItem__formLern">Priority</div>
                     </div>
                 </div>
             </div>

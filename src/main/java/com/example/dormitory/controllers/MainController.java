@@ -10,8 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/")
@@ -19,6 +18,8 @@ public class MainController {
 
     private final StudentDAO studentDAO;
     private final AdminDAO adminDAO;
+
+    private List<Student[]> groups = new ArrayList<>();
 
     @Autowired
     public MainController(StudentDAO studentDAO, AdminDAO adminDAO) {
@@ -33,7 +34,7 @@ public class MainController {
 
     @GetMapping("/groupView")
     public String userView(Model model) {
-        model.addAttribute("students", studentDAO.index());
+        model.addAttribute("students", groups);
         return "view/groupView";
     }
 
@@ -60,17 +61,50 @@ public class MainController {
 
         model.addAttribute("amountOfGroups", amountGroups);
         model.addAttribute("percentOfBudget", percentOfBudget);
-        model.addAttribute("students", studentDAO.index());
         return "view/groupViewAdmin";
     }
 
-//    @RequestMapping(value = "/groupViewAdmin", method = RequestMethod.POST)
-//    public String getParametersForGroups(@ModelAttribute(value = "amountOfGroups") int amountGroups,
-//                                         @ModelAttribute(value = "percentOfBudget") int percentOfBudget) {
-//        List<List<Student>> groups = new ArrayList<>();
-//        for (int i = 0; i < amountGroups; i++) {
-//            groups.add(new ArrayList<>());
-//        }
-//
-//    }
+    @RequestMapping(value = "/groupViewAdmin", method = RequestMethod.POST)
+    public String getParametersForGroups(@ModelAttribute(value = "amountOfGroups") int amountGroups,
+                                         @ModelAttribute(value = "percentOfBudget") double percentOfBudget) {
+        groups.clear();
+        List<Student> listToWork = List.copyOf(studentDAO.index());
+
+        percentOfBudget = percentOfBudget / 100;
+        System.out.println("percentOfBudget " + percentOfBudget);
+        System.out.println("amountOfGroups " + amountGroups);
+
+        for (int i = 0; i < amountGroups; i++) {
+
+            Student[] group;
+
+            if (i + 1 == amountGroups) {
+                group = new Student[listToWork.size() / amountGroups + listToWork.size() % amountGroups];
+            } else {
+                group = new Student[listToWork.size() / amountGroups];
+            }
+
+            for (int j = 0; j < group.length * percentOfBudget; j++) {
+                group[j] = listToWork.stream()
+                        .filter(student -> student.getPriority().equals("BUDGET") && !student.isInGroup())
+                        .findFirst()
+                        .orElse(new Student(0, "test", "test", 100, "Budget"))
+                        .setInGroup(true);
+                System.out.println(group[j].getFirstName() + " " + group[j].getLastName());
+            }
+
+            System.out.println("group.length * percentOfBudget " + group.length * percentOfBudget);
+            for (int j = (int) (group.length * percentOfBudget); j < group.length; j++) {
+                group[j] = listToWork.stream()
+                        .filter(student -> student.getPriority().equals("CONTRACT") && !student.isInGroup())
+                        .findFirst()
+                        .orElse(new Student(0, "test", "test", 100, "Contract"))
+                        .setInGroup(true);
+                System.out.println(group[j].getFirstName() + " " + group[j].getLastName());
+            }
+            groups.add(group);
+
+        }
+        return "redirect:/groupView";
+    }
 }

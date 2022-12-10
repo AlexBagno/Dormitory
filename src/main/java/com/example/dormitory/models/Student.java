@@ -1,5 +1,7 @@
 package com.example.dormitory.models;
 
+
+
 public class Student {
 
     private int id;
@@ -7,6 +9,8 @@ public class Student {
     private String lastName;
     private double points;
     private Priority priority;
+
+    private boolean isInGroup = false;
 
     public Student() {}
 
@@ -60,6 +64,18 @@ public class Student {
 
     public void setPriority(String priority) {
         this.priority = Priority.valueOf(priority.toUpperCase());
+    }
+
+    public boolean isInGroup() {
+        return isInGroup;
+    }
+
+    public Student setInGroup(boolean inGroup) {
+        if (this == null) {
+            throw new NullPointerException("There is no enough students");
+        }
+        isInGroup = inGroup;
+        return this;
     }
 }
 

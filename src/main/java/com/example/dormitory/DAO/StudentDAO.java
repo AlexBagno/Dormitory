@@ -5,8 +5,10 @@ import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Component
 public class StudentDAO {
@@ -53,7 +55,15 @@ public class StudentDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return students;
+        return students.stream().sorted((o1, o2) -> {
+
+            if (o1.getPoints() - o2.getPoints() > 0)
+                return -1;
+            else if (o1.getPoints() == o2.getPoints())
+                return 0;
+            else
+                return 1;
+        }).collect(Collectors.toList());
     }
 
     public void delete(int id) {
