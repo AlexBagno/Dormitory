@@ -1,14 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Group</title>
 </head>
+
 <body>
-<p>Group View</p>
-<!-- Таблица с группами-->
-<div th:each="student : ${students}">
-    <p th:text="${student.firstName} + ' ' + ${student.getLastName()}">Name</p>
+<div class="wrapper">
+    <header class="header">
+
+    </header>
+    <main class="main">
+        <div class="groups">
+            <div class="group">
+                <div class="group__number">Группа 1</div>
+                <div class="group__list">
+                    <div class="groupItem list__title">
+                        <div class="groupItem__id">ID</div>
+                        <div class="groupItem__name">Ім'я</div>
+                        <div class="groupItem__lastName">Прізвище</div>
+                        <div class="groupItem__bal">Бал</div>
+                        <div class="groupItem__formLern">Форма навчання</div>
+                    </div>
+                    <div th:each="student : ${students}" class="groupItem">
+                        <div th:text="${student.getId()}" class="groupItem__id">id</div>
+                        <div th:text="${student.getFirstName()}"class="groupItem__name">FirstName</div>
+                        <div th:text="${student.getLastName()}"class="groupItem__lastName">LastName</div>
+                        <div th:text="${student.getPoints()}"class="groupItem__bal">Points</div>
+                        <div th:text="${student.getPriority()}"class="groupItem__formLern">Priority</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
 </body>
+
 </html>

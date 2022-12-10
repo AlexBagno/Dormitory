@@ -54,8 +54,8 @@ public class Student {
         this.points = points;
     }
 
-    public Priority getPriority() {
-        return priority;
+    public String getPriority() {
+        return priority.toString();
     }
 
     public void setPriority(String priority) {
