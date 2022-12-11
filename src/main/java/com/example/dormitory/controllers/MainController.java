@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
@@ -19,7 +20,7 @@ public class MainController {
     private final StudentDAO studentDAO;
     private final AdminDAO adminDAO;
 
-    private List<Student[]> groups = new ArrayList<>();
+    private List<List<Student>> groups = new ArrayList<>();
 
     @Autowired
     public MainController(StudentDAO studentDAO, AdminDAO adminDAO) {
@@ -70,40 +71,63 @@ public class MainController {
         groups.clear();
         List<Student> listToWork = List.copyOf(studentDAO.index());
 
+        List<Student> listOfBudget = List.copyOf(studentDAO.index().stream()
+                .filter(student -> student.getPriority().equals("BUDGET"))
+                .collect(Collectors.toList()));
+
+        List<Student> listOfContract = List.copyOf(studentDAO.index().stream()
+                .filter(student -> student.getPriority().equals("CONTRACT"))
+                .collect(Collectors.toList()));
+
         percentOfBudget = percentOfBudget / 100;
-        System.out.println("percentOfBudget " + percentOfBudget);
-        System.out.println("amountOfGroups " + amountGroups);
 
-        for (int i = 0; i < amountGroups; i++) {
+        int studentsPerGroup = listToWork.size() / amountGroups;
+        int remainingStudents = listToWork.size() % amountGroups;
 
-            Student[] group;
+        for (int i = 1; i <= amountGroups; i++) {
+            int extra = i <= remainingStudents ? 1 : 0;
+            System.out.println("group " + i + " contains " + (studentsPerGroup + extra) + " students.");
 
-            if (i + 1 == amountGroups) {
-                group = new Student[listToWork.size() / amountGroups + listToWork.size() % amountGroups];
-            } else {
-                group = new Student[listToWork.size() / amountGroups];
-            }
+            Student[] group = new Student[studentsPerGroup + extra];
 
-            for (int j = 0; j < group.length * percentOfBudget; j++) {
-                group[j] = listToWork.stream()
-                        .filter(student -> student.getPriority().equals("BUDGET") && !student.isInGroup())
+            for (int j = 0; j < (int) (group.length * percentOfBudget); j++) {
+                int finalJ = j;
+                listOfBudget.stream()
+                        .filter(student -> !student.isInGroup())
                         .findFirst()
-                        .orElse(new Student(0, "test", "test", 100, "Budget"))
-                        .setInGroup(true);
-                System.out.println(group[j].getFirstName() + " " + group[j].getLastName());
+                        .ifPresent(student -> group[finalJ] = student.setInGroup(true));
+                System.out.println("loop: " + group[j].getFirstName() + " " + group[j].getLastName());
             }
 
-            System.out.println("group.length * percentOfBudget " + group.length * percentOfBudget);
             for (int j = (int) (group.length * percentOfBudget); j < group.length; j++) {
-                group[j] = listToWork.stream()
-                        .filter(student -> student.getPriority().equals("CONTRACT") && !student.isInGroup())
+                int finalJ = j;
+                listOfContract.stream()
+                        .filter(student -> !student.isInGroup())
                         .findFirst()
-                        .orElse(new Student(0, "test", "test", 100, "Contract"))
-                        .setInGroup(true);
-                System.out.println(group[j].getFirstName() + " " + group[j].getLastName());
-            }
-            groups.add(group);
+                        .ifPresent(student -> group[finalJ] = student.setInGroup(true));
 
+                if (group[j] == null) {
+                    listOfBudget.stream()
+                            .filter(student -> !student.isInGroup())
+                            .findFirst()
+                            .ifPresent(student -> {
+                                student.setPriority("Contract");
+                                group[finalJ] = student.setInGroup(true);
+                            });
+                }
+            }
+
+            groups.add(Arrays.stream(group).sorted(new Comparator<Student>() {
+                @Override
+                public int compare(Student o1, Student o2) {
+                    if (o2.getPoints() - o1.getPoints() > 0)
+                        return 1;
+                    else if (o2.getPoints() == o1.getPoints())
+                        return 0;
+                    else
+                        return -1;
+                }
+            }).collect(Collectors.toList()));
         }
         return "redirect:/groupView";
     }
