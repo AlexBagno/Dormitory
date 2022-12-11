@@ -23,6 +23,7 @@ public class MainController {
     private static boolean CHECK_ADMIN = false;
 
     private List<List<Student>> groups = new ArrayList<>();
+    private List<Student> leftStudents = new ArrayList<>();
 
     @Autowired
     public MainController(StudentDAO studentDAO, AdminDAO adminDAO) {
@@ -35,14 +36,6 @@ public class MainController {
         return "index";
     }
 
-    @GetMapping("/groupView")
-    public String userView(Model model) {
-        if (groups.isEmpty()) {
-            return "redirect:/";
-        }
-        model.addAttribute("students", groups);
-        return "view/groupView";
-    }
 
     @GetMapping("/admin")
     public String adminPage(Model model) {
@@ -76,6 +69,7 @@ public class MainController {
     @RequestMapping(value = "/groupViewAdmin", method = RequestMethod.POST)
     public String getParametersForGroups(@ModelAttribute(value = "amountOfGroups") int amountGroups,
                                          @ModelAttribute(value = "percentOfBudget") double percentOfBudget) {
+
         groups.clear();
         List<Student> listToWork = List.copyOf(studentDAO.index());
 
@@ -137,14 +131,55 @@ public class MainController {
                 }
             }
 
-            groups.add(Arrays.stream(group).sorted((o1, o2) -> {
-                if (o2.getPoints() - o1.getPoints() > 0)
-                    return 1;
-                else if (o2.getPoints() == o1.getPoints())
-                    return 0;
-                else
-                    return -1;
-            }).collect(Collectors.toList()));
+            groups.add(Arrays.stream(group)
+                    .sorted(Comparator.comparingDouble(Student::getPoints)
+                            .reversed())
+                    .collect(Collectors.toList()));
+        }
+        return "redirect:/groupView";
+    }
+
+    @GetMapping("/groupView")
+    public String userView(Model model) {
+        if (groups.isEmpty()) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("students", groups.stream()
+                .map(students -> students.stream()
+                        .sorted(Comparator.comparingDouble(Student::getPoints)
+                                .reversed()))
+                .collect(Collectors.toList()));
+
+        model.addAttribute("leftStudents", leftStudents.stream()
+                .sorted(Comparator.comparingDouble(Student::getPoints)
+                        .reversed())
+                .collect(Collectors.toList()));
+        return "pages/adminView";
+    }
+
+    @RequestMapping(value = "/groupView", method = RequestMethod.POST)
+    public String deleteStudent(@ModelAttribute(value = "studentId") int id) {
+        if (leftStudents.stream().noneMatch(student -> student.getId() == id)) {
+            for (List<Student> students : groups) {
+                if (students != null)
+                    for (Student s : students) {
+                        System.out.println("for " + s.getLastName() + " " + s.getFirstName());
+                        if (s != null && s.getId() == id) {
+                            leftStudents.add(s);
+                            students.remove(s);
+                            return "redirect:/groupView";
+                        }
+                    }
+            }
+        } else {
+            for (Student s : leftStudents) {
+                if (s.getId() == id) {
+                    groups.stream().min(Comparator.comparingInt(List::size)).ifPresent(students -> students.add(s));
+                    leftStudents.remove(s);
+                    return "redirect:/groupView";
+                }
+            }
         }
         return "redirect:/groupView";
     }
