@@ -20,6 +20,8 @@ public class MainController {
     private final StudentDAO studentDAO;
     private final AdminDAO adminDAO;
 
+    private static boolean CHECK_ADMIN = false;
+
     private List<List<Student>> groups = new ArrayList<>();
 
     @Autowired
@@ -35,6 +37,9 @@ public class MainController {
 
     @GetMapping("/groupView")
     public String userView(Model model) {
+        if (groups.isEmpty()) {
+            return "redirect:/";
+        }
         model.addAttribute("students", groups);
         return "view/groupView";
     }
@@ -49,6 +54,7 @@ public class MainController {
     @RequestMapping(value = "/admin", method = RequestMethod.POST)
     public String checkPass(@ModelAttribute(value = "admin") Admin admin) {
         if (adminDAO.index().stream().anyMatch(admin1 -> admin1.equals(admin))) {
+            CHECK_ADMIN = true;
             return "redirect:/groupViewAdmin";
         } else {
             return "redirect:/admin";
@@ -57,12 +63,14 @@ public class MainController {
 
     @GetMapping("/groupViewAdmin")
     public String groupView(Model model) {
+        if (!CHECK_ADMIN)
+            return "redirect:/admin";
         int amountGroups = 0;
-        int percentOfBudget = 0;
+        double percentOfBudget = 0;
 
         model.addAttribute("amountOfGroups", amountGroups);
         model.addAttribute("percentOfBudget", percentOfBudget);
-        return "view/groupViewAdmin";
+        return "pages/adminPanel";
     }
 
     @RequestMapping(value = "/groupViewAdmin", method = RequestMethod.POST)
@@ -80,6 +88,7 @@ public class MainController {
                 .collect(Collectors.toList()));
 
         percentOfBudget = percentOfBudget / 100;
+        System.out.println("percentOfBudget = " + percentOfBudget);
 
         int studentsPerGroup = listToWork.size() / amountGroups;
         int remainingStudents = listToWork.size() % amountGroups;
@@ -96,6 +105,17 @@ public class MainController {
                         .filter(student -> !student.isInGroup())
                         .findFirst()
                         .ifPresent(student -> group[finalJ] = student.setInGroup(true));
+
+                if (group[j] == null) {
+                    listOfContract.stream()
+                            .filter(student -> !student.isInGroup())
+                            .findFirst()
+                            .ifPresent(student -> {
+                                student.setPriority("Budget");
+                                group[finalJ] = student.setInGroup(true);
+                            });
+                }
+
                 System.out.println("loop: " + group[j].getFirstName() + " " + group[j].getLastName());
             }
 
@@ -117,16 +137,13 @@ public class MainController {
                 }
             }
 
-            groups.add(Arrays.stream(group).sorted(new Comparator<Student>() {
-                @Override
-                public int compare(Student o1, Student o2) {
-                    if (o2.getPoints() - o1.getPoints() > 0)
-                        return 1;
-                    else if (o2.getPoints() == o1.getPoints())
-                        return 0;
-                    else
-                        return -1;
-                }
+            groups.add(Arrays.stream(group).sorted((o1, o2) -> {
+                if (o2.getPoints() - o1.getPoints() > 0)
+                    return 1;
+                else if (o2.getPoints() == o1.getPoints())
+                    return 0;
+                else
+                    return -1;
             }).collect(Collectors.toList()));
         }
         return "redirect:/groupView";
