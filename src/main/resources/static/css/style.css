@@ -149,3 +149,141 @@ body{
 .groupItem__formLern{
     flex: 12.5% 0 0;
 }
+
+
+
+.panel {
+    background-color: #ecf1ff;
+    max-width: 1000px;
+    width: 80%;
+    height: 60vh;
+    min-height: 450px;
+    border-radius: 7px;
+    margin: 15vh auto;
+    padding: 20px 10px 20px;
+  }
+  
+  .formingGroupPanel {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    width: 80%;
+  }
+  
+  .formingGroupPanel__title {
+    margin: 0 0 40px;
+    font-size: 40px;
+    text-align: center;
+  }
+  
+  .formingGroupPanel__form {
+    -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+  }
+  
+  .formingGroupF {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  .formingGroupF__label {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 50%;
+            flex: 0 0 50%;
+    font-size: 30px;
+    padding-right: 10px;
+    color: #0e0e0e;
+  }
+  
+  .formingGroupF__inputDiv {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+  }
+  
+  .formingGroupF__numGroup {
+    margin-bottom: 20px;
+  }
+  
+  .formingGroupF__numInput {
+    width: 70px;
+    height: 40px;
+    font-size: 24px;
+    padding: 0 5px;
+  }
+  
+  .formingGroupF__precentBud {
+    -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+    margin-bottom: 30px;
+  }
+  
+  .formingGroupF__precentBud > label {
+    -webkit-box-flex: 0;
+        -ms-flex: 0 1 60%;
+            flex: 0 1 60%;
+  }
+  
+  .formingGroupF__rangeWrapper {
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 40%;
+            flex: 0 0 40%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
+  
+  .formingGroupF__range {
+    display: inline-block;
+    width: 80%;
+  }
+  
+  .formingGroupF__sub {
+    text-align: center;
+  }
+  
+  .formingGroupF__subBut {
+    display: inline-block;
+    background-color: #FF9C00;
+    border: none;
+    min-width: 300px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-size: 24px;
+    color: #ffffff;
+  }
+  
+
+
+
+
+
+
+
+
+

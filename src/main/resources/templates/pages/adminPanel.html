@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../cssGeneral/style.css">
+    <title>Group</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header class="header">
+
+        </header>
+        <main class="main">
+            <div class="panel formingGroupPanel">
+                <div class="formingGroupPanel__title">Уведіть параметри для формування груп</div>
+                <form action="" class="formingGroupPanel__form formingGroupF" id="formingGroup">
+                    <div class="formingGroupF__numGroup formingGroupF__inputDiv">
+                        <label for="numGroup" class="formingGroupF__label">Кількість
+                            груп</label>
+                        <input type="number" id="numGroup" step="0" min="1" max="10" value="1" name="countGroup"
+                            class=" formingGroupF__numInput">
+                    </div>
+                    <div class="formingGroupF__precentBud formingGroupF__inputDiv">
+                        <label for="precentBud" class="formingGroupF__label">Відсоток бюджетників на групу</label>
+                        <div class="formingGroupF__rangeWrapper">
+                            <input type="range" id="precentBud" name="precentBud" max="100" min="0" value="50"
+                                class="formingGroupF__range styled-slider slider-progress">
+                        </div>
+                    </div>
+                    <div class="formingGroupF__sub">
+                        <input type="submit" name="submit" value="Сформувати списки" class="formingGroupF__subBut">
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
