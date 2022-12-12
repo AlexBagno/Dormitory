@@ -55,15 +55,10 @@ public class StudentDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return students.stream().sorted((o1, o2) -> {
-
-            if (o1.getPoints() - o2.getPoints() > 0)
-                return -1;
-            else if (o1.getPoints() == o2.getPoints())
-                return 0;
-            else
-                return 1;
-        }).collect(Collectors.toList());
+        return students.stream()
+                .sorted(Comparator.comparingDouble(Student::getPoints)
+                        .reversed())
+                .collect(Collectors.toList());
     }
 
     public void delete(int id) {

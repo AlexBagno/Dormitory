@@ -88,6 +88,7 @@ public class MainController {
         int remainingStudents = listToWork.size() % amountGroups;
 
         for (int i = 1; i <= amountGroups; i++) {
+            int finalI = i + 1;
             int extra = i <= remainingStudents ? 1 : 0;
             System.out.println("group " + i + " contains " + (studentsPerGroup + extra) + " students.");
 
@@ -95,15 +96,16 @@ public class MainController {
 
             for (int j = 0; j < (int) (group.length * percentOfBudget); j++) {
                 int finalJ = j;
+
                 listOfBudget.stream()
                         .filter(student -> !student.isInGroup())
-                        .findFirst()
+                        .findAny()
                         .ifPresent(student -> group[finalJ] = student.setInGroup(true));
 
                 if (group[j] == null) {
                     listOfContract.stream()
                             .filter(student -> !student.isInGroup())
-                            .findFirst()
+                            .findAny()
                             .ifPresent(student -> {
                                 student.setPriority("Budget");
                                 group[finalJ] = student.setInGroup(true);
@@ -117,13 +119,13 @@ public class MainController {
                 int finalJ = j;
                 listOfContract.stream()
                         .filter(student -> !student.isInGroup())
-                        .findFirst()
+                        .findAny()
                         .ifPresent(student -> group[finalJ] = student.setInGroup(true));
 
                 if (group[j] == null) {
                     listOfBudget.stream()
                             .filter(student -> !student.isInGroup())
-                            .findFirst()
+                            .findAny()
                             .ifPresent(student -> {
                                 student.setPriority("Contract");
                                 group[finalJ] = student.setInGroup(true);
