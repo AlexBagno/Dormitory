@@ -185,4 +185,19 @@ public class MainController {
         }
         return "redirect:/groupView";
     }
+
+    @GetMapping("/groupViewUser")
+    public String groupViewUser(Model model) {
+        if (groups.isEmpty()) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("students", groups.stream()
+                .map(students -> students.stream()
+                        .sorted(Comparator.comparingDouble(Student::getPoints)
+                                .reversed()))
+                .collect(Collectors.toList()));
+
+        return "view/groupView";
+    }
 }
