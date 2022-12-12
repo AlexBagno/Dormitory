@@ -88,7 +88,7 @@ public class MainController {
         int remainingStudents = listToWork.size() % amountGroups;
 
         for (int i = 1; i <= amountGroups; i++) {
-            int finalI = i + 1;
+            int finalI = i;
             int extra = i <= remainingStudents ? 1 : 0;
             System.out.println("group " + i + " contains " + (studentsPerGroup + extra) + " students.");
 
