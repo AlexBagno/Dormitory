@@ -79,6 +79,7 @@ public class MainController {
 
         List<Student> listOfContract = List.copyOf(studentDAO.index().stream()
                 .filter(student -> student.getPriority().equals("CONTRACT"))
+                .sorted(Comparator.comparingDouble(Student::getPoints))
                 .collect(Collectors.toList()));
 
         percentOfBudget = percentOfBudget / 100;
@@ -104,6 +105,7 @@ public class MainController {
 
                 if (group[j] == null) {
                     listOfContract.stream()
+                            .sorted(Comparator.comparingDouble(Student::getPoints).reversed())
                             .filter(student -> !student.isInGroup())
                             .findAny()
                             .ifPresent(student -> {
