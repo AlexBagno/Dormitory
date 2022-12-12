@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class StudentDAO {
     private static final String URL = "jdbc:mysql://localhost:3306/groups";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "sasa310705";
+    private static final String PASSWORD = "admin1111";
 
     private static Connection connection;
 
