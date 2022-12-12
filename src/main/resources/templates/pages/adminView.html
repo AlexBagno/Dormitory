@@ -14,6 +14,11 @@
     <div class="wrapper">
         <main class="main">
             <div class="groups">
+                <div class="homeLink">
+                    <a href="/">
+                        Вийти
+                    </a>
+                </div>
                 <div class="group admin_view" th:each="student, stStat : ${students}">
                     <!--admin_view - модификатор. Если убрать - поле "Удалить" не отображаеться-->
                     <div class="group__number title" th:text="Группа + ' ' + ${stStat.index + 1}">Група 1</div>
@@ -42,6 +47,9 @@
                                 </form>
                             </div>
                         </div>
+                    </div>
+                    <div th:text="'Середній бал: ' + ${averagePoints.get(stStat.index).intValue()}" class="group__averageRating">
+                        Середній бал: 170
                     </div>
                 </div>
 

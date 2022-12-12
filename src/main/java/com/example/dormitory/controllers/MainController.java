@@ -24,6 +24,7 @@ public class MainController {
 
     private List<List<Student>> groups = new ArrayList<>();
     private List<Student> leftStudents = new ArrayList<>();
+    private List<Double> averagePoints = new ArrayList<>();
 
     @Autowired
     public MainController(StudentDAO studentDAO, AdminDAO adminDAO) {
@@ -139,6 +140,10 @@ public class MainController {
                     .sorted(Comparator.comparingDouble(Student::getPoints)
                             .reversed())
                     .collect(Collectors.toList()));
+            double average = Arrays.stream(group).mapToDouble(Student::getPoints).sum();
+
+            averagePoints.add(countAverage(average, group.length));
+
         }
         return "redirect:/groupView";
     }
@@ -159,6 +164,8 @@ public class MainController {
                 .sorted(Comparator.comparingDouble(Student::getPoints)
                         .reversed())
                 .collect(Collectors.toList()));
+
+        model.addAttribute("averagePoints", averagePoints);
         return "pages/adminView";
     }
 
@@ -172,6 +179,11 @@ public class MainController {
                         if (s != null && s.getId() == id) {
                             leftStudents.add(s);
                             students.remove(s);
+                            averagePoints.remove(groups.indexOf(students));
+                            averagePoints.add(groups.indexOf(students),
+                                    countAverage(students.stream()
+                                            .mapToDouble(Student::getPoints)
+                                            .sum(), students.size()));
                             return "redirect:/groupView";
                         }
                     }
@@ -179,8 +191,16 @@ public class MainController {
         } else {
             for (Student s : leftStudents) {
                 if (s.getId() == id) {
-                    groups.stream().min(Comparator.comparingInt(List::size)).ifPresent(students -> students.add(s));
+                    groups.stream().min(Comparator.comparingInt(List::size)).ifPresent(students -> {
+                        students.add(s);
+                        averagePoints.remove(groups.indexOf(students));
+                        averagePoints.add(groups.indexOf(students),
+                                countAverage(students.stream()
+                                        .mapToDouble(Student::getPoints)
+                                        .sum(), students.size()));
+                    });
                     leftStudents.remove(s);
+
                     return "redirect:/groupView";
                 }
             }
@@ -200,6 +220,12 @@ public class MainController {
                                 .reversed()))
                 .collect(Collectors.toList()));
 
+        model.addAttribute("averagePoints", averagePoints);
+
         return "view/groupView";
+    }
+
+    public double countAverage(double sum, int size) {
+        return sum / size;
     }
 }

@@ -34,6 +34,9 @@
                         <div th:text="${{s.getPriority()}}"class="groupItem__formLern">Priority</div>
                     </div>
                 </div>
+                <div th:text="'Середній бал: ' + ${averagePoints.get(stStat.index).intValue()}" class="group__averageRating">
+                    Середній бал: 170
+                </div>
             </div>
         </div>
     </main>
